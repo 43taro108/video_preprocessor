@@ -1,5 +1,5 @@
 @echo off
 echo Starting frontend...
-cd /d %~dp0frontend
+cd /d "%~dp0frontend"
 npm run dev
 pause
