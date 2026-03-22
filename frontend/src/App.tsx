@@ -21,7 +21,7 @@ export default function App() {
   const [trimEnd, setTrimEnd] = useState(0);
   const [maskRegions, setMaskRegions] = useState<MaskRegion[]>([]);
   const [frameUrl, setFrameUrl] = useState<string | null>(null);
-  const [sourceFps, setSourceFps] = useState(200);
+  const [sourceFps, setSourceFps] = useState(30);
   const [outputFps, setOutputFps] = useState(30);
   const [outputName, setOutputName] = useState("");
   const [processing, setProcessing] = useState(false);
@@ -185,6 +185,11 @@ export default function App() {
 
               {/* FPS Settings */}
               <div className="fps-settings">
+                <p className="fps-description">
+                  Source FPS: the actual recording frame rate of the camera (e.g. 200 for high-speed cameras, 30 for standard).
+                  Output FPS: the frame rate of the exported video.
+                  If Output FPS is lower than Source FPS, frames will be skipped to downsample.
+                </p>
                 <div className="fps-row">
                   <label>
                     Source FPS

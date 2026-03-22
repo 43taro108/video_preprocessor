@@ -147,6 +147,14 @@ body {
   gap: 10px;
 }
 
+.fps-description {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
 .fps-row {
   display: flex;
   flex-direction: column;
