@@ -1,114 +1,139 @@
 # Video Preprocessor
 
-動画ファイルのアップロード・トリム・マスク・再生成を行うWebアプリケーション。
+動画ファイルの **トリム（切り出し）・マスク（領域指定）・再生成（書き出し）** をブラウザ上で行えるツールです。
 
-## 機能
+## できること
 
-- **アップロード** - mp4 / avi / mov 形式の動画をドラッグ＆ドロップでアップロード
-- **トリム** - タイムライン上でドラッグして開始・終了位置を指定
-- **マスク** - 矩形を描画して対象領域を指定（領域外は黒塗り）
-- **FPSリサンプリング** - 高速カメラ動画（200fps等）を任意のFPSにダウンサンプリング
-- **再生成** - トリム＋マスク適用済みのmp4をダウンロード
+| 機能 | 説明 |
+|------|------|
+| **動画アップロード** | mp4 / avi / mov ファイルをドラッグ＆ドロップで読み込み |
+| **トリム** | タイムライン上で開始位置・終了位置をドラッグして切り出し範囲を指定 |
+| **マスク** | フレーム画像上に矩形を描いて、残したい領域を指定（領域外は黒塗り） |
+| **FPS変換** | 高速カメラ（200fps等）の動画を 30fps などに変換 |
+| **書き出し** | 上記をすべて適用した mp4 をダウンロード |
 
-## 技術スタック
+---
 
-| レイヤー | 技術 |
-|----------|------|
-| Frontend | React 19 + TypeScript + Vite |
-| Backend | Python FastAPI + Uvicorn |
-| 動画処理 | OpenCV |
-| スタイル | CSS (ダークテーマ) |
+## 必要なもの（初回のみインストール）
 
-## セットアップ
+このツールを使うには **Python** と **Node.js** の2つが必要です。
+どちらも無料で、5分程度でインストールできます。
 
-### 前提条件
+### 1. Python のインストール
 
-- Python 3.10+ (Conda環境 `phmr` を想定)
-- Node.js 18+
-- OpenCV (`opencv-python`)
+1. https://www.python.org/downloads/ を開く
+2. **「Download Python 3.xx.x」** ボタンをクリック
+3. ダウンロードしたファイルを実行
+4. **「Add Python to PATH」にチェックを入れる**（これが最も重要です）
+5. 「Install Now」をクリック
 
-### インストール
+> 確認方法：コマンドプロンプトを開いて `python --version` と入力し、バージョンが表示されればOKです。
 
-```bash
-# setup.bat を実行（pip install + npm install を一括実行）
-setup.bat
+### 2. Node.js のインストール
+
+1. https://nodejs.org/ を開く
+2. **「LTS」**（推奨版）をダウンロード
+3. ダウンロードしたファイルを実行し、画面の指示に従ってインストール
+
+> 確認方法：コマンドプロンプトを開いて `node --version` と入力し、バージョンが表示されればOKです。
+
+---
+
+## セットアップ（初回のみ）
+
+1. このリポジトリをダウンロードして展開、または `git clone` する
+2. フォルダ内の **`setup.bat`** をダブルクリック
+3. 自動で必要なファイルがインストールされます
+4. 「セットアップ完了！」と表示されたら準備完了です
+
+```
+もし途中でエラーが出たら：
+  → Python や Node.js が正しくインストールされているか確認してください
+  → 「Add Python to PATH」にチェックを入れ忘れた場合は、Python を再インストールしてください
 ```
 
-または手動で:
+---
 
-```bash
-# Backend
-cd backend
-pip install -r requirements.txt
+## 起動方法
 
-# Frontend
-cd frontend
-npm install
+1. **`run.bat`** をダブルクリック
+2. 黒い画面（コマンドプロンプト）が2つ開きます ← これは正常です
+3. ブラウザで **http://localhost:5174** を開く
+
+```
+終了するには：
+  → 開いた2つの黒い画面を閉じてください
 ```
 
-## 起動
-
-```bash
-# バックエンド＋フロントエンドを同時起動
-run.bat
-```
-
-個別に起動する場合:
-
-```bash
-start_backend.bat   # Backend  → http://localhost:8002
-start_frontend.bat  # Frontend → http://localhost:5174
-```
-
-ブラウザで http://localhost:5174 を開く。
+---
 
 ## 使い方
 
-1. 動画ファイルをドラッグ＆ドロップ
-2. Source FPS / Output FPS を設定
-3. タイムラインのハンドルをドラッグしてトリム範囲を指定
-4. 必要に応じて「Capture Frame for Mask」→ 矩形を描画してマスク領域を指定
-5. 「Generate Video」をクリック
-6. 処理完了後、プレビュー確認＋ダウンロード
+### Step 1: 動画を読み込む
 
-## API エンドポイント
+- 画面中央のエリアに動画ファイルをドラッグ＆ドロップ
+- またはクリックしてファイルを選択
+- 対応形式: **mp4 / avi / mov**
 
-| Method | Endpoint | 説明 |
-|--------|----------|------|
-| POST | `/api/upload` | 動画アップロード |
-| GET | `/api/video/info?file_id=` | メタデータ取得 |
-| GET | `/api/video/thumbnail?file_id=&time_sec=` | フレーム画像取得 |
-| POST | `/api/process` | トリム＋マスク処理 |
-| GET | `/api/download/{job_id}` | 処理済み動画ダウンロード |
-| GET | `/api/preview/{job_id}` | ブラウザプレビュー |
+### Step 2: FPS を設定する
 
-## ディレクトリ構成
+| 項目 | 説明 |
+|------|------|
+| **Source FPS** | 撮影時のFPS（カメラの設定値）を入力。プリセットボタンから選択も可能 |
+| **Output FPS** | 書き出したいFPSを指定。Source FPS より低い値を指定するとフレームが間引かれます |
 
-```
-video_preprocessor/
-├── backend/
-│   ├── app/
-│   │   ├── main.py              # FastAPI アプリ
-│   │   ├── config.py            # 設定
-│   │   └── routers/
-│   │       └── video.py         # APIエンドポイント + 動画処理
-│   ├── run.py                   # サーバー起動
-│   ├── requirements.txt
-│   ├── uploads/                 # アップロード一時保存
-│   └── outputs/                 # 処理結果出力
-├── frontend/
-│   ├── src/
-│   │   ├── App.tsx              # メインUI (Upload → Edit → Done)
-│   │   ├── index.css            # ダークテーマCSS
-│   │   ├── api/
-│   │   │   └── client.ts        # APIクライアント
-│   │   └── components/
-│   │       ├── VideoTrimmer.tsx  # トリムUI
-│   │       └── RegionMaskEditor.tsx  # マスク描画UI
-│   ├── package.json
-│   └── vite.config.ts
-├── run.bat                      # 一括起動
-├── setup.bat                    # 初回セットアップ
-├── start_backend.bat            # バックエンド単体起動
-└── start_frontend.bat           # フロントエンド単体起動
-```
+例：200fps で撮影した動画を 30fps にする場合 → Source FPS: 200, Output FPS: 30
+
+### Step 3: トリム（切り出し範囲を指定）
+
+- 動画プレビューの下にあるタイムラインで **青いハンドル** をドラッグ
+- 左のハンドル = 開始位置、右のハンドル = 終了位置
+- Play/Pause ボタンで動画を確認できます
+
+### Step 4: マスク（任意）
+
+動画内の特定の領域だけを残したい場合に使います。
+
+1. **「Capture Frame for Mask」** ボタンをクリックして、現在のフレームを取り込む
+2. 取り込まれた画像の上で **マウスをドラッグして矩形を描く**
+3. 描いた矩形の中だけが残り、外側は黒塗りになります
+4. 複数の矩形を描くことも可能（「x」ボタンで個別削除、「Clear All」で全削除）
+
+> マスクが不要な場合はこのステップをスキップしてください。
+
+### Step 5: 書き出し
+
+1. 必要に応じて「Output Name」に出力ファイル名を入力（省略可）
+2. **「Generate Video」** ボタンをクリック
+3. 処理が完了するとプレビューが表示されます
+4. **「Download」** ボタンで mp4 ファイルをダウンロード
+
+---
+
+## よくある質問
+
+### Q: 起動時に「初回セットアップが完了していません」と出る
+
+A: 先に `setup.bat` を実行してください。
+
+### Q: setup.bat で「Python が見つかりません」と出る
+
+A: Python のインストール時に **「Add Python to PATH」** にチェックを入れてインストールし直してください。
+
+### Q: setup.bat で「Node.js が見つかりません」と出る
+
+A: https://nodejs.org/ から Node.js をインストールしてください。インストール後、コマンドプロンプトを開き直してから再度 setup.bat を実行してください。
+
+### Q: ブラウザを開いても何も表示されない
+
+A: `run.bat` をダブルクリックした後、黒い画面に「ready」や「Local:」の文字が表示されるまで数秒待ってからブラウザを開いてください。
+
+### Q: マスクのプレビューが表示されない
+
+A: トリマー部分の **「Capture Frame for Mask」** ボタンをクリックして、先にフレームを取り込んでください。
+
+---
+
+## ライセンス
+
+MIT
